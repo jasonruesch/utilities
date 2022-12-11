@@ -15,10 +15,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-function cleanupGamelist(systemPath, games) {
-  const systemMissingAssetsPath = join(systemPath, '_missing-assets');
-  mkdirSync(join(systemMissingAssetsPath), { recursive: true });
-
+function cleanupGamelist(systemPath, systemMissingAssetsPath, games) {
   for (var i = 0; i < games.length; i++) {
     const { path } = games[i];
     const gamePath = join(systemPath, path);
@@ -44,7 +41,7 @@ function processSystem(romsPath, system) {
   }
 
   if (
-    !existsSync(join(systemPath, 'images')) ||
+    !existsSync(join(systemPath, 'images')) &&
     !existsSync(join(systemPath, 'downloaded_images'))
   ) {
     console.log();
@@ -74,7 +71,15 @@ function processSystem(romsPath, system) {
       `${games.length === 1 ? 'game' : 'games'}...`
     );
 
-    cleanupGamelist(systemPath, games);
+    const systemMissingAssetsPath = join(
+      romsPath,
+      '..',
+      'roms-missing-assets',
+      system
+    );
+    mkdirSync(join(systemMissingAssetsPath), { recursive: true });
+
+    cleanupGamelist(systemPath, systemMissingAssetsPath, games);
 
     const modifiedGamelist = games.reduce(
       (gamelist, { game }) => gamelist.replace(`\t${game}\n`, ''),
