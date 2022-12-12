@@ -41,6 +41,7 @@ function processSystem(romsPath, system) {
   }
 
   if (
+    !existsSync(join(systemPath, 'media')) &&
     !existsSync(join(systemPath, 'images')) &&
     !existsSync(join(systemPath, 'downloaded_images'))
   ) {
